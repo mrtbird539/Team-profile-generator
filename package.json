@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/mrtbird539/Team-profile-generator#readme",
   "dependencies": {
+    "email-validator": "^2.0.4",
     "inquirer": "^8.1.2",
     "jest": "^27.0.6"
   }
