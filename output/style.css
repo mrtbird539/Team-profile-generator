@@ -1,0 +1,45 @@
+
+:root {
+    --red: #e84756;
+    --white: #ffffff;
+    --blue: #0077f7;
+    --grey: #f6f7f9;
+  }
+  
+  header {
+    background-color: var(--red);
+    color: var(--white);
+    padding: 2ch;
+    text-align: center;
+  }
+  
+  main {
+    padding: 2rem;
+  }
+  
+  .container {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .card {
+    margin: 1rem;
+    width: 18rem;
+    border: 0;
+    box-shadow: 5px 5px 5px grey;
+  }
+  
+  .card .card-header {
+    background-color: var(--blue);
+    color: var(--white);
+  }
+  
+  .card h4 {
+    margin: 0.25rem 0;
+  }
+  
+  .card ul {
+    padding: 2rem;
+    background-color: var(--grey);
+  }
