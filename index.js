@@ -7,6 +7,7 @@ const Intern = require("./lib/intern");
 const Manager = require("./lib/manager");
 let isManager = false;
 
+//Questions for initial prompt
 const managerQuestions = [
     {
         name: "name",
@@ -19,13 +20,13 @@ const managerQuestions = [
     {
         name: "email",
         message: "What is the manager's email?",
-        // validate(input) {
-        //      if (emailValidator.validate(input)) {
-        //          return true;
-        //      } else {
-        //          return "Please enter a valid email address.";
-        //      }
-        // },
+        validate(input) {
+            if (emailValidator.validate(input)) {
+                return true;
+            } else {
+                return "Please enter a valid email address.";
+            }
+        },
     },
     {
         name: "officeNumber",
@@ -41,6 +42,7 @@ const managerQuestions = [
         ],
     },
 ]
+//Base questions for any employee
 const newEmpQuestions = [
     {
         name: "name",
@@ -53,13 +55,13 @@ const newEmpQuestions = [
     {
         name: "email",
         message: "What is the team member's email?",
-        // validate(input) {
-        //      if (emailValidator.validate(input)) {
-        //          return true;
-        //      } else {
-        //          return "Please enter a valid email address.";
-        //      }
-        // },
+        validate(input) {
+            if (emailValidator.validate(input)) {
+                return true;
+            } else {
+                return "Please enter a valid email address.";
+            }
+        },
     },
     {
         type: "list",
@@ -71,6 +73,7 @@ const newEmpQuestions = [
         ],
     },
 ]
+//Engineer specific questions
 const engineerQues = [
     {
         name: "github",
@@ -86,6 +89,7 @@ const engineerQues = [
         ],
     },
 ]
+//intern specific questions
 const internQues = [
     {
         name: "school",
@@ -102,9 +106,9 @@ const internQues = [
     },
 ]
 
-
+//Function to create new members
 const newMember = function () {
-
+    //checks to see if a manager has been created yet or not
     if (!isManager) {
         inquirer
             .prompt(managerQuestions)
@@ -113,6 +117,7 @@ const newMember = function () {
                 const newTeamMem = new Manager(newEmpAns.name, newEmpAns.id, newEmpAns.email, newEmpAns.officeNumber)
                 addTeamHtml(newTeamMem);
                 isManager = true;
+                //checks if user wants to add more members or not
                 if (answers.addmem == "Yes") {
                     newMember()
                 }
@@ -120,11 +125,13 @@ const newMember = function () {
                     htmlEnd()
                 }
             });
+    //handles any employees being created after the manager
     } else {
         inquirer
             .prompt(newEmpQuestions)
             .then((answers) => {
                 let newEmpAns = answers
+                //handles creating an intern
                 if (answers.addRole == "Intern") {
                     inquirer
                         .prompt(internQues)
@@ -139,7 +146,7 @@ const newMember = function () {
                                 htmlEnd();
                             }
                         })
-
+                //handles creating an engineer
                 } else if (answers.addRole == "Engineer") {
                     inquirer
                         .prompt(engineerQues)
@@ -159,7 +166,7 @@ const newMember = function () {
     }
 }
 
-
+//Base html
 function htmlInit() {
     const html = `<!DOCTYPE html>
     <html lang="en">
@@ -182,15 +189,16 @@ function htmlInit() {
          </header>
         <div class="container">
             <div class="row">`;
-    fs.writeFile("./output/index.html", html, function(err) {
+    fs.writeFile("./output/index.html", html, function (err) {
         if (err) {
             console.error(err);
         }
     });
 }
 
+//adds new html for every new team member that gets added
 function addTeamHtml(teamMem) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         const name = teamMem.getName();
         const role = teamMem.getRole();
         const id = teamMem.getId();
@@ -206,8 +214,8 @@ function addTeamHtml(teamMem) {
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item eID">ID: ${id}</li>
-                <li class="list-group-item eEmail">Email Address: ${email}</li>
-                <li class="list-group-item eUnique">GitHub: ${gitHub}</li>
+                <li class="list-group-item eEmail">Email Address: <a href="mailto:${email}">${email}</li>
+                <li class="list-group-item eUnique">GitHub: <a href="https://github.com/${gitHub}">${gitHub}</li>
             </ul>
             </div>
         </div>`;
@@ -221,7 +229,7 @@ function addTeamHtml(teamMem) {
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item eId">ID: ${id}</li>
-                <li class="list-group-item eEmail">Email Address: ${email}</li>
+                <li class="list-group-item eEmail">Email Address: <a href="mailto:${email}">${email}</li>
                 <li class="list-group-item eUnique">School: ${school}</li>
             </ul>
             </div>
@@ -236,7 +244,7 @@ function addTeamHtml(teamMem) {
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item eId">ID: ${id}</li>
-                <li class="list-group-item eEmail">Email Address: ${email}</li>
+                <li class="list-group-item eEmail">Email Address: <a href="mailto:${email}">${email}</li>
                 <li class="list-group-item eUnique">Office Phone: ${officePhone}</li>
             </ul>
             </div>
@@ -251,6 +259,8 @@ function addTeamHtml(teamMem) {
         });
     });
 }
+
+//adds the footer to the html page
 function htmlEnd() {
     const html = ` </div>
     </div>
@@ -258,6 +268,7 @@ function htmlEnd() {
 </body>
 </html>`;
 
+//writes file
     fs.appendFile("./output/index.html", html, function (err) {
         if (err) {
             console.error(err);
@@ -265,7 +276,7 @@ function htmlEnd() {
     });
 }
 
-
+//function to run on initialization
 function init() {
     htmlInit();
     newMember();
